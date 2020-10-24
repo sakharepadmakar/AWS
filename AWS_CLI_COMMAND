@@ -1,0 +1,16 @@
+#Find Stopped instances
+aws ec2 describe-instances --filters Name=instance-state-name,Values=stopped --query 'Reservations[].Instances[].[KeyName,PrivateIpAddress,Tags[?Key==`Name`].Value[]]' --output text | sed '$!N;s/\n/\t/'
+
+#Find All ELB with details (ONLY network and Application)
+aws elbv2 describe-load-balancers --query 'LoadBalancers[].[LoadBalancerName,DNSName,Type,Scheme,State.[Code]]' --output text
+
+#Final All Classic LB Details
+aws elb describe-load-balancers --query LoadBalancerDescriptions[].[LoadBalancerName,DNSName,Scheme,Instances[]] --output text
+
+
+#Remove Multiple lines from output in --query
+aws ec2 describe-volumes --query "map(&[], Volumes[].[VolumeId,State,Encrypted,VolumeType,Attachments[].InstanceId,Attachments[].InstanceId | []])" --output text
+
+#Find All AMI With Name and description
+aws ec2 describe-images --owners self --output json | jq '.Images[] | {ImageId,Name,Description}'
+
